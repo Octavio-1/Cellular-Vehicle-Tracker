@@ -52,6 +52,10 @@ Once it is configured you can run the server with the following command
 
     python server.py
 
+# Displaying coordinates
+
+You can then run the map using the map.html file
+
 # Diagnostics
 
 This sketch provides some basic diagnostics for the tracker.  When transmitting GPS data the green LED
