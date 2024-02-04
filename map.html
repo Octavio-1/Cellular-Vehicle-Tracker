@@ -1,0 +1,66 @@
+<!DOCTYPE html >
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Real_Time_Vehicle_Tracker</title>
+<script
+src="https://maps.googleapis.com/maps/api/js?key="
+type="text/javascript"></script>
+<script type="text/javascript">
+function load() {
+var map = new google.maps.Map(document.getElementById("map"), {
+center: new google.maps.LatLng(7.7180,8.5183),
+zoom: 13,
+mapTypeId: 'roadmap'
+});
+var infoWindow = new google.maps.InfoWindow;
+// Change this depending on the name of your PHP file
+downloadUrl("genxml.php", function(data) {
+var xml = data.responseXML;
+var markers = xml.documentElement.getElementsByTagName("marker");
+for (var i = 0; i < markers.length; i++) {
+var date = markers[i].getAttribute("date");
+var point = new google.maps.LatLng(
+parseFloat(markers[i].getAttribute("lat")),
+parseFloat(markers[i].getAttribute("lng")));
+var speed = markers[i].getAttribute("speed");
+var course = markers[i].getAttribute("course");77
+var html = "<b>" + 'speed: ' + speed + ' m/s' + "</b> <br/>" + "<b>" + 'course: ' +
+course + "</b> <br/>" + 'date: ' + date + "</b> <br/>" + point;
+var image = 'https://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png';
+var marker = new google.maps.Marker({
+map: map,
+position: point,
+icon: image
+});
+bindInfoWindow(marker, map, infoWindow, html);
+}
+});
+}
+function bindInfoWindow(marker, map, infoWindow, html) {
+google.maps.event.addListener(marker, 'click', function() {
+infoWindow.setContent(html);
+infoWindow.open(map, marker);
+});
+}
+function downloadUrl(url, callback) {
+var request = window.ActiveXObject ?
+new ActiveXObject('Microsoft.XMLHTTP') :
+new XMLHttpRequest;
+request.onreadystatechange = function() {
+if (request.readyState == 4) {
+request.onreadystatechange = doNothing;
+callback(request, request.status);
+}
+};78
+request.open('GET', url, true);
+request.send(null);
+}
+function doNothing() {}
+//]]>
+</script>
+</head>
+<body onload="load()">
+<div id="map" style="width: 500px; height: 500px"></div>
+</body>
+</html>
